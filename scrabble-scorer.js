@@ -77,11 +77,19 @@ const scoringAlgorithms = [
    }
 ];
 
-function scorerPrompt() {}
+function scorerPrompt() { }
 
-function transform() { };
+let newPointStructure = transform(oldPointStructure)
 
-let newPointStructure
+function transform(oldPointStructure) {
+   let newPointStructure = {}
+   for (let point in oldPointStructure) {
+      for (let i of oldPointStructure[point]) {
+         newPointStructure[i] = point
+      }
+   }
+   return newPointStructure
+};
 
 function runProgram() {
    initialPrompt();
