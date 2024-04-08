@@ -15,15 +15,11 @@ const oldPointStructure = {
 function oldScrabbleScorer(word) {
    word = word.toUpperCase();
    let letterPoints = "";
-
    for (let i = 0; i < word.length; i++) {
-
       for (const pointValue in oldPointStructure) {
-
          if (oldPointStructure[pointValue].includes(word[i])) {
             letterPoints += `Points for '${word[i]}': ${pointValue}\n`
          }
-
       }
    }
    return letterPoints;
@@ -34,15 +30,13 @@ function oldScrabbleScorer(word) {
 
 function initialPrompt() {
    console.log("Let's play some scrabble!\n\n");
-   console.log(oldScrabbleScorer(input.question("Enter a word: ")))
+   return input.question("Enter a word: ")
 };
 
 let simpleScorer = function (word) {
    word = word.toUpperCase()
    let points = 0
-   for (let i = 0; i < word.length; i++) {
-      points++
-   }
+   for (let letter in word) points++
    return points
 };
 
@@ -50,14 +44,19 @@ let vowelBonusScorer = function (word) {
    word = word.toUpperCase()
    let vowels = "AEIOU"
    let points = 0
-   for (let i = 0; i < word.length; i++) {
-      if (vowels.includes(word[i])) points += 3
+   for (let letter in word) {
+      if (vowels.includes(word[letter])) points += 3
       else points++
    }
    return points
 };
 
-let scrabbleScorer;
+let scrabbleScorer = function (word) {
+   word = word.toUpperCase();
+   let points = 0;
+   for (let letter in word) points += newPointStructure[word[letter].toLowerCase()]
+   return points;
+};
 
 const scoringAlgorithms = [
    {
@@ -73,27 +72,30 @@ const scoringAlgorithms = [
    {
       name: "Scrabble",
       description: "The traditional scoring algorithm.",
-      scorerFunction: undefined
+      scorerFunction: scrabbleScorer
    }
 ];
 
-function scorerPrompt() { }
+function scorerPrompt() {
+   let userInput = input.question("Which scoring algorithm would you like to use?\n\n0 - Simple: One point per character \n1 - Vowel Bonus: Vowels are worth 3 points \n2 - Scrabble: Uses scrabble point system \nEnter 0, 1, or 2: ")
+   return scoringAlgorithms[userInput]
+}
 
 let newPointStructure = transform(oldPointStructure)
 
 function transform(oldPointStructure) {
    let newPointStructure = {}
    for (let point in oldPointStructure) {
-      for (let i of oldPointStructure[point]) {
-         newPointStructure[i.toLowerCase()] = Number(point)
+      for (let letter of oldPointStructure[point]) {
+         newPointStructure[letter.toLowerCase()] = Number(point)
       }
    }
    return newPointStructure
 };
 
 function runProgram() {
-   initialPrompt();
-
+   let word = initialPrompt();
+   console.log(`Score for '${word}': ${scorerPrompt().scorerFunction(word)}`)
 }
 
 // Don't write any code below this line //
