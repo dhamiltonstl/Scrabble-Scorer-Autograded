@@ -29,7 +29,7 @@ function oldScrabbleScorer(word) {
 
 function initialPrompt() {
    let userInput = input.question("Enter a word: ")
-   while (!userInput || /\d/.test(userInput)) {
+   while (!userInput || !/^[A-Za-z\s]*$/.test(userInput)) {
       console.log("\nPlease enter a valid word.\n")
       userInput = input.question("Enter a word: ")
    }
