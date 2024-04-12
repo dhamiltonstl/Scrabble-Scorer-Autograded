@@ -27,22 +27,21 @@ function oldScrabbleScorer(word) {
    return letterPoints;
 }
 
-// your job is to finish writing these functions and variables that we've named //
-// don't change the names or your program won't work as expected. //
-
 function initialPrompt() {
    let userInput = input.question("Enter a word: ")
-   if (!userInput || /\d/.test(userInput)) {
+   while (!userInput || /\d/.test(userInput)) {
       console.log("\nPlease enter a valid word.\n")
-      initialPrompt()
+      userInput = input.question("Enter a word: ")
    }
-   else if (userInput) return userInput
+   return userInput
 };
 
 let simpleScorer = function (word) {
    word = word.toUpperCase()
    let points = 0
-   for (let letter in word) points++
+   for (let char of word) {
+      if (char !== " ") points++
+   }
    return points
 };
 
@@ -50,9 +49,9 @@ let vowelBonusScorer = function (word) {
    word = word.toUpperCase()
    let vowels = "AEIOU"
    let points = 0
-   for (let letter in word) {
-      if (vowels.includes(word[letter])) points += 3
-      else points++
+   for (let char of word) {
+      if (vowels.includes(char)) points += 3
+      else if (char !== " ") points++
    }
    return points
 };
@@ -60,7 +59,7 @@ let vowelBonusScorer = function (word) {
 let scrabbleScorer = function (word) {
    word = word.toUpperCase();
    let points = 0;
-   for (let letter in word) points += newPointStructure[word[letter].toLowerCase()]
+   for (let char of word) points += newPointStructure[char.toLowerCase()]
    return points;
 };
 
@@ -83,14 +82,19 @@ const scoringAlgorithms = [
 ];
 
 function scorerPrompt() {
-   let userInput = input.question(`${divLine}Which scoring algorithm would you like to use?\n\n0 - Simple: One point per character \n1 - Vowel Bonus: Vowels are worth 3 points \n2 - Scrabble: Uses scrabble point system ${divLine}Enter 0, 1, or 2: `)
+   console.log(`${divLine}Which scoring algorithm would you like to use?\n\n0 - Simple: One point per character \n1 - Vowel Bonus: Vowels are worth 3 points \n2 - Scrabble: Uses scrabble point system ${divLine}`)
+   let userInput = input.question(`Enter 0, 1, or 2: `)
+   while (!userInput || userInput < 0 || userInput > 2) {
+      console.log("\nPlease enter a valid scorer.\n")
+      userInput = input.question(`Enter 0, 1, or 2: `)
+   }
    return scoringAlgorithms[userInput]
 }
 
 let newPointStructure = transform(oldPointStructure)
 
 function transform(oldPointStructure) {
-   let newPointStructure = {}
+   let newPointStructure = { ' ': 0 }
    for (let point in oldPointStructure) {
       for (let letter of oldPointStructure[point]) {
          newPointStructure[letter.toLowerCase()] = Number(point)
@@ -101,7 +105,6 @@ function transform(oldPointStructure) {
 
 function playAgain() {
    let userInput = input.question("\nWould you like to play again?(Y/N) ")
-   // console.log(userInput.toUpperCase)
    if (userInput.toUpperCase() === 'Y') runProgram()
    else if (userInput.toUpperCase() === 'N') return
    else {
@@ -112,7 +115,7 @@ function playAgain() {
 
 function runProgram() {
    console.log(`${divLine}Let's play some scrabble!${divLine}`);
-   let word = initialPrompt();
+   const word = initialPrompt();
    console.log(`${divLine}Score for '${word}': ${scorerPrompt().scorerFunction(word)}`)
    playAgain()
 }
