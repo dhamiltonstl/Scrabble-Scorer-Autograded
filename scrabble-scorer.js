@@ -1,4 +1,4 @@
-// This assignment is inspired by a problem on Exercism (https://exercism.org/tracks/javascript/exercises/etl) that demonstrates Extract-Transform-Load using Scrabble's scoring system. 
+// This assignment is inspired by a problem on Exercism (https://exercism.org/tracks/javascript/exercises/etl) that demonstrates Extract-Transform-Load using Scrabble's scoring system.
 
 const input = require("readline-sync");
 
@@ -11,6 +11,8 @@ const oldPointStructure = {
    8: ['J', 'X'],
    10: ['Q', 'Z']
 };
+
+const divLine = "\n----------------------------------------------\n"
 
 function oldScrabbleScorer(word) {
    word = word.toUpperCase();
@@ -29,7 +31,7 @@ function oldScrabbleScorer(word) {
 // don't change the names or your program won't work as expected. //
 
 function initialPrompt() {
-   console.log("Let's play some scrabble!\n\n");
+   console.log(`${divLine}Let's play some scrabble!${divLine}`);
    return input.question("Enter a word: ")
 };
 
@@ -77,7 +79,7 @@ const scoringAlgorithms = [
 ];
 
 function scorerPrompt() {
-   let userInput = input.question("Which scoring algorithm would you like to use?\n\n0 - Simple: One point per character \n1 - Vowel Bonus: Vowels are worth 3 points \n2 - Scrabble: Uses scrabble point system \nEnter 0, 1, or 2: ")
+   let userInput = input.question(`${divLine}Which scoring algorithm would you like to use?\n\n0 - Simple: One point per character \n1 - Vowel Bonus: Vowels are worth 3 points \n2 - Scrabble: Uses scrabble point system ${divLine}Enter 0, 1, or 2: `)
    return scoringAlgorithms[userInput]
 }
 
@@ -93,9 +95,21 @@ function transform(oldPointStructure) {
    return newPointStructure
 };
 
+function playAgain() {
+   let userInput = input.question("\nWould you like to play again?(Y/N) ")
+   // console.log(userInput.toUpperCase)
+   if (userInput.toUpperCase() === 'Y') runProgram()
+   else if (userInput.toUpperCase() === 'N') return
+   else {
+      console.log("\nPlease answer Y or N.")
+      playAgain()
+   }
+}
+
 function runProgram() {
    let word = initialPrompt();
-   console.log(`Score for '${word}': ${scorerPrompt().scorerFunction(word)}`)
+   console.log(`${divLine}Score for '${word}': ${scorerPrompt().scorerFunction(word)}`)
+   playAgain()
 }
 
 // Don't write any code below this line //
