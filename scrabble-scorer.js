@@ -59,7 +59,9 @@ let vowelBonusScorer = function (word) {
 let scrabbleScorer = function (word) {
    word = word.toUpperCase();
    let points = 0;
-   for (let char of word) points += newPointStructure[char.toLowerCase()]
+   for (let char of word) {
+      if (char !== ' ') points += newPointStructure[char.toLowerCase()]
+   }
    return points;
 };
 
@@ -94,7 +96,7 @@ function scorerPrompt() {
 let newPointStructure = transform(oldPointStructure)
 
 function transform(oldPointStructure) {
-   let newPointStructure = { ' ': 0 }
+   let newPointStructure = {}
    for (let point in oldPointStructure) {
       for (let letter of oldPointStructure[point]) {
          newPointStructure[letter.toLowerCase()] = Number(point)
