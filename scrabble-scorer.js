@@ -31,8 +31,12 @@ function oldScrabbleScorer(word) {
 // don't change the names or your program won't work as expected. //
 
 function initialPrompt() {
-   console.log(`${divLine}Let's play some scrabble!${divLine}`);
-   return input.question("Enter a word: ")
+   let userInput = input.question("Enter a word: ")
+   if (!userInput || /\d/.test(userInput)) {
+      console.log("\nPlease enter a valid word.\n")
+      initialPrompt()
+   }
+   else if (userInput) return userInput
 };
 
 let simpleScorer = function (word) {
@@ -107,6 +111,7 @@ function playAgain() {
 }
 
 function runProgram() {
+   console.log(`${divLine}Let's play some scrabble!${divLine}`);
    let word = initialPrompt();
    console.log(`${divLine}Score for '${word}': ${scorerPrompt().scorerFunction(word)}`)
    playAgain()
